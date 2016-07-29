@@ -1,4 +1,4 @@
-var SVG_PATTERN =   /<\s*svg\s+(.*?)\s*src\s*=\s*[\"\'](.*?\.svg)[\"\']\s*(.*?)\s*(\/>|>\s*<\/\s*svg\s*>)/gi;
+var SVG_PATTERN = /<[\n\r\s]*svg[\n\r\s]+(.*?)[\n\r\s]*src[\n\r\s]*=[\n\r\s]*[\"\'](.*?\.svg)[\"\'][\n\r\s]*((.|[\r\n])*?)[\n\r\s]*(\/>|>[\n\r\s]*<\/[\n\r\s]*svg[\n\r\s]*>)/gi;
 
 var fs = require('fs');
 var path = require('path');
