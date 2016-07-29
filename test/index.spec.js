@@ -36,7 +36,4 @@ describe('markup inline loader', function () {
   it('inline svg', function () {
     load('<svg class="blue"><path></path></svg>').trim().should.equal('<svg class="blue"><path></path></svg>');
   });
-  it('math', function () {
-    load('<math class="test" src="./test.mml"></math>').trim().should.equal('<math class="test"   style="display: block;">test</math>');
-  });
 });

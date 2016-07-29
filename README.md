@@ -1,10 +1,8 @@
 # What's this?
 
-This is a webpack loader. It can inline SVG or MathML file to HTML, so that you can apply css to embedded svg.
+This is a webpack loader. It can inline SVG files into HTML, so that you can apply css to them.
 
-## Demo
-
-[Click here](http://demo-starter.angular.live/#/about)
+It was forked from [https://github.com/asnowwolf/markup-inline-loader] - thank you!
 
 ## Example 
 
@@ -13,7 +11,7 @@ This is a webpack loader. It can inline SVG or MathML file to HTML, so that you 
 ```js
 {
   test: /\.html$/,
-  loader: 'markup-inline'
+  loader: 'svg-inline'
 },
 ```
 
@@ -22,20 +20,23 @@ or with html-loader:
 ```js
 {
   test: /\.html$/,
-  loader: 'html!markup-inline'
+  loader: 'html!svg-inline'
 },
 ```
 
+
 ### Original HTML
 
+Attributes (apart from `src`) are retained in the output.
+
 ```html
-<svg class="icon" height="1em" src="../%common/images/icons/camera.svg" />
+<svg class="icon" src="./icons/camera.svg" />
 ```
 
 ### Translated HTML
 
 ```svg
-<svg class="icon" height="1em" viewBox="0 0 1024 1404.416" xmlns="http://www.w3.org/2000/svg">
+<svg class="icon" viewBox="0 0 1024 1404.416" xmlns="http://www.w3.org/2000/svg">
   <path d="M960 440.384h-256v-128c0-35.312-28.656-64-64-64h-256c-35.344 0-64 28.688-64 64v128h-128v-64h-128v64c-35.344 0-64 28.688-64 64v704c0 35.376 28.656 64 64 64h896c35.344 0 64-28.624 64-64v-704c0-35.312-28.656-64-64-64z m-512-64h128v64h-128v-64z m448 768h-768v-576h768v576z m-384-128c106.032 0 192-85.938 192-192s-85.968-192-192-192-192 85.938-192 192 85.968 192 192 192z m0-256c35.344 0 64 28.624 64 64s-28.656 64-64 64-64-28.624-64-64 28.656-64 64-64z"/>
 </svg>
 ```
