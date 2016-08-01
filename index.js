@@ -13,6 +13,7 @@ var svgo = new SVGO({
 });
 
 module.exports = function (content) {
+  this.cacheable && this.cacheable();
   var loader = this;
   // process SVG
   content = content.replace(SVG_PATTERN, function (match, preAttributes, fileName, postAttributes) {
