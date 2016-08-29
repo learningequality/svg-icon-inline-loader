@@ -1,28 +1,26 @@
 {
-  "name": "markup-inline-loader",
-  "version": "1.0.0",
-  "description": "inline markups to HTML: SVG, MathML, etc.",
+  "name": "svg-inline-loader",
+  "version": "2.0.0",
+  "description": "webpack loader to inline SVGs",
   "main": "index.js",
   "scripts": {
     "test": "mocha ./test/index.spec.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/asnowwolf/markup-inline-loader.git"
+    "url": "git+https://github.com/learningequality/svg-inline-loader.git"
   },
   "keywords": [
     "webpack",
     "loader",
     "svg",
-    "mathml",
-    "markup"
+    "inline"
   ],
-  "author": "Zhicheng Wang",
+  "author": "Zhicheng Wang, Devon Rueckner",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/asnowwolf/markup-inline-loader/issues"
+    "url": "https://github.com/learningequality/svg-inline-loader/issues"
   },
-  "homepage": "https://github.com/asnowwolf/markup-inline-loader#readme",
   "devDependencies": {
     "mocha": "^2.5.3",
     "should": "^9.0.2"
