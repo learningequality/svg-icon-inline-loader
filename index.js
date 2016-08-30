@@ -24,7 +24,7 @@ module.exports = function (content) {
     svgo.optimize(fileContent, function (result) {
       fileContent = result.data;
     });
-    return fileContent.replace(/^<svg/i, '<svg ' + preAttributes + ' ' + postAttributes + ' ');
+    return fileContent.replace(/^<svg/i, '<svg role="presentation" focusable="false" ' + preAttributes + ' ' + postAttributes + ' ');
   });
   return content;
 };
