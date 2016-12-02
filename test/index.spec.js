@@ -39,4 +39,7 @@ describe('markup inline loader', function () {
   it('inline svg', function () {
     load('<svg class="blue"><path></path></svg>').trim().should.equal('<svg class="blue"><path></path></svg>');
   });
+  it('vue-style attributes', function () {
+    load('<svg v-bind:type="whatev\'..\'"    role="something else"   v-if   = "false" v:else="false" class=\'abc\' src="./basic.svg" width="100px" height="10px"></svg>').trim().should.equal('<svg role="presentation" focusable="false" class=\'abc\' width="100px" height="10px"  viewBox="0 0 1024 1404.416" xmlns="http://www.w3.org/2000/svg"><path d="M960 440.384H704v-128c0-35.312-28.656-64-64-64H384c-35.344 0-64 28.688-64 64v128H192v-64H64v64c-35.344 0-64 28.688-64 64v704c0 35.376 28.656 64 64 64h896c35.344 0 64-28.624 64-64v-704c0-35.312-28.656-64-64-64zm-512-64h128v64H448v-64zm448 768H128v-576h768v576zm-384-128c106.032 0 192-85.938 192-192s-85.968-192-192-192-192 85.938-192 192 85.968 192 192 192zm0-256c35.344 0 64 28.624 64 64s-28.656 64-64 64-64-28.624-64-64 28.656-64 64-64z"/></svg>');
+  });
 });
