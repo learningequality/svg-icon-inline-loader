@@ -1,62 +1,84 @@
-var SVG_PATTERN = /<[\n\r\s]*svg[\n\r\s]+(.*?)[\n\r\s]*src[\n\r\s]*=[\n\r\s]*[\"\'](.*?\.svg)[\"\'][\n\r\s]*((.|[\r\n])*?)[\n\r\s]*(\/>|>[\n\r\s]*<\/[\n\r\s]*svg[\n\r\s]*>)/gi;
-
-var QUOTE_PATTERN_STR = `*["']?((?:.(?!["']?\\s+(?:\\S+)=|[>"']))+.)["']?`;
-var ATTRIBUTE_PATTERN = new RegExp(`(\\S+)\\s*=\\s` + QUOTE_PATTERN_STR, 'gi');
-
 var fs = require('fs');
 var path = require('path');
 var SVGO = require('svgo');
+var simpleHtmlTokenizer = require('simple-html-tokenizer');
 
-var svgo = new SVGO({
-  plugins: [
-    {
-      removeTitle: true
-    }
-  ]
-});
+var SELF_CLOSING_SVG = new RegExp(`<svg[^>]+?\/>`, 'gi');
+var svgo = new SVGO({plugins: [{removeTitle: true}]});
+
 
 module.exports = function (content) {
   this.cacheable && this.cacheable();
   var loader = this;
-  // process SVG
-  content = content.replace(SVG_PATTERN, function (match, preAttributes, fileName, postAttributes) {
-    var filePath = path.join(loader.context, fileName);
-    loader.addDependency(filePath);
 
-    // First, find a list of all attribute names on the input placeholder tag
-    var inputAttributeNames = [];
-    var currentMatch = null;
-    while (currentMatch = ATTRIBUTE_PATTERN.exec(preAttributes)) {
-      inputAttributeNames.push(currentMatch[1]); // first match group
+  content = content.replace(SELF_CLOSING_SVG, function (matchedSVG) {
+      // console.log(matchedSVG);
+      var tokenizedSVG = simpleHtmlTokenizer.tokenize(matchedSVG);
+      var SVGAttributes = tokenizedSVG[0].attributes;
+      var hasLocalSrc = false;
+      var localSrcPath = null;
+      var filePath = null;
+      var name = null;
+
+      for (var i = 0; i < SVGAttributes.length; i++) {
+        if (SVGAttributes[i][0] == "src") {
+          hasLocalSrc = true;
+          localSrcPath = SVGAttributes[i][1];
+          break;
+        }
+      }
+
+      if (hasLocalSrc) {
+        filePath = path.join(loader.context, localSrcPath);
+
+      } else {
+        for (var i = 0; i < SVGAttributes.length; i++) {
+          if (SVGAttributes[i][0] == "name") {
+            name = SVGAttributes[i][1];
+            break;
+          }
+        }
+        var splitName = name.split('-');
+        var iconType = splitName[0];
+        var iconCategory = splitName[1];
+        var iconName = splitName[2];
+        var materialIconName = 'ic_' + iconName + '_24px.svg';
+        if (iconType != 'material') {
+          throw 'icon name must be prefixed with material';
+        }
+        // smh
+        filePath = path.resolve(path.join('node_modules', 'material-design-icons', iconCategory, 'svg', 'production', materialIconName));
+      }
+
+
+      try {
+        var fileContent = fs.readFileSync(filePath, {encoding: 'utf-8'});
+      } catch (e) {
+        console.error('Invalid icon name.');
+      }
+
+
+      loader.addDependency(filePath);
+      // remove src and name from svg
+      var newSVGAttributes = SVGAttributes.filter(function (attribute) {
+        return (attribute[0] != 'src') && (attribute[0] != 'name');
+      });
+
+      // run the SVG contents through an optimizer to clean it up and normalize it
+      svgo.optimize(fileContent, function (result) {
+        // It's callback, but this is actually run synchronously
+        fileContent = result.data;
+      });
+
+      var beginning = fileContent.slice(0, 4);
+      var end = fileContent.slice(4);
+      var oldAttributes = '';
+
+      newSVGAttributes.forEach(function (attr) {
+        oldAttributes = oldAttributes + ' ' + attr[0] + '="' + attr[1] + '" ';
+      });
+      return (beginning + oldAttributes + end);
     }
-    while (currentMatch = ATTRIBUTE_PATTERN.exec(postAttributes)) {
-      inputAttributeNames.push(currentMatch[1]); // first match group
-    }
-
-    // load up the actual SVG contents
-    var fileContent = fs.readFileSync(filePath, {encoding: 'utf-8'});
-
-    // run the SVG contents through an optimizer to clean it up and normalize it
-    svgo.optimize(fileContent, function (result) {
-      // It's callback, but this is actually run synchronously
-      fileContent = result.data;
-    });
-
-    // opening tag - simple parsing because of standardized output from SVGO
-    outputSvgStr = fileContent.substr(0, fileContent.indexOf('>'));
-
-    // Add in some standardized accessibility attributes
-    outputSvgStr = outputSvgStr.replace(/^<svg/i, '<svg role="presentation" focusable="false" ');
-    // Any attributes on the placeholder tag should take precedence over
-    // attributes of the same name in the actual SVG file, or the a11y attributes above.
-    inputAttributeNames.forEach(function(attr) {
-      var re = new RegExp(attr + `\\s*=\\s` + QUOTE_PATTERN_STR, 'gi');
-      outputSvgStr = outputSvgStr.replace(re, '');
-    });
-
-    outputSvgStr += ' ' + preAttributes + ' ' + postAttributes + '>';
-
-    return fileContent.replace(/^<svg.+?>/, outputSvgStr);
-  });
+  );
   return content;
 };
