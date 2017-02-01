@@ -4,81 +4,94 @@ var SVGO = require('svgo');
 var simpleHtmlTokenizer = require('simple-html-tokenizer');
 
 var SELF_CLOSING_SVG = new RegExp(`<svg[^>]+?\/>`, 'gi');
-var svgo = new SVGO({plugins: [{removeTitle: true}]});
-
 
 module.exports = function (content) {
-  this.cacheable && this.cacheable();
   var loader = this;
+  this.cacheable && this.cacheable();
 
-  content = content.replace(SELF_CLOSING_SVG, function (matchedSVG) {
-      // console.log(matchedSVG);
-      var tokenizedSVG = simpleHtmlTokenizer.tokenize(matchedSVG);
-      var SVGAttributes = tokenizedSVG[0].attributes;
-      var hasLocalSrc = false;
-      var localSrcPath = null;
-      var filePath = null;
-      var name = null;
+  return content.replace(SELF_CLOSING_SVG, function (matchedSVG) {
+    var filePath = null;
+    var tokenizedSVG = simpleHtmlTokenizer.tokenize(matchedSVG);
+    var SVGAttributes = tokenizedSVG[0].attributes;
 
-      for (var i = 0; i < SVGAttributes.length; i++) {
-        if (SVGAttributes[i][0] == "src") {
-          hasLocalSrc = true;
-          localSrcPath = SVGAttributes[i][1];
-          break;
-        }
-      }
-
-      if (hasLocalSrc) {
-        filePath = path.join(loader.context, localSrcPath);
-
-      } else {
-        for (var i = 0; i < SVGAttributes.length; i++) {
-          if (SVGAttributes[i][0] == "name") {
-            name = SVGAttributes[i][1];
-            break;
-          }
-        }
-        var splitName = name.split('-');
-        var iconType = splitName[0];
-        var iconCategory = splitName[1];
-        var iconName = splitName[2];
-        var materialIconName = 'ic_' + iconName + '_24px.svg';
-        if (iconType != 'material') {
-          throw 'icon name must be prefixed with material';
-        }
-        // smh
-        filePath = path.resolve(path.join('node_modules', 'material-design-icons', iconCategory, 'svg', 'production', materialIconName));
-      }
-
-
-      try {
-        var fileContent = fs.readFileSync(filePath, {encoding: 'utf-8'});
-      } catch (e) {
-        console.error('Invalid icon name.');
-      }
-
-
-      loader.addDependency(filePath);
-      // remove src and name from svg
-      var newSVGAttributes = SVGAttributes.filter(function (attribute) {
-        return (attribute[0] != 'src') && (attribute[0] != 'name');
-      });
-
-      // run the SVG contents through an optimizer to clean it up and normalize it
-      svgo.optimize(fileContent, function (result) {
-        // It's callback, but this is actually run synchronously
-        fileContent = result.data;
-      });
-
-      var beginning = fileContent.slice(0, 4);
-      var end = fileContent.slice(4);
-      var oldAttributes = '';
-
-      newSVGAttributes.forEach(function (attr) {
-        oldAttributes = oldAttributes + ' ' + attr[0] + '="' + attr[1] + '" ';
-      });
-      return (beginning + oldAttributes + end);
+    // if does not have src or icon-name attributes, return same svg
+    var srcOrIconName = hasSrcOrIconName(SVGAttributes);
+    if (srcOrIconName[0] === false) {
+      return matchedSVG;
+    } else if (srcOrIconName[1] == 'src') {
+      var src = srcOrIconName[2];
+      filePath = path.join(loader.context, src);
+    } else if (srcOrIconName[1] == 'icon-name') {
+      var iconName = srcOrIconName[2];
+      filePath = generateLibraryIconPath(iconName);
     }
-  );
-  return content;
+
+    try {
+      var fileContent = fs.readFileSync(filePath, {encoding: 'utf-8'});
+      loader.addDependency(filePath);
+      return tidySVG(fileContent, SVGAttributes);
+    } catch (e) {
+      console.error('SVG Path does not exist.');
+    }
+  });
 };
+
+// Checks if a src or icon-name attribute exists.
+// If no, returns [false, null, null]
+// If src, returns [true, 'src', path]
+// If icon-name, returns [true, icon-name', iconName]
+function hasSrcOrIconName(SVGAttributes) {
+  for (var i = 0; i < SVGAttributes.length; i++) {
+    if (SVGAttributes[i][0] == "src") {
+      var path = SVGAttributes[i][1];
+      return [true, 'src', path];
+    }
+    if (SVGAttributes[i][0] == "icon-name") {
+      var iconName = SVGAttributes[i][1];
+      return [true, 'icon-name', iconName];
+    }
+  }
+  return [false, null, null];
+}
+
+function generateLibraryIconPath(iconName) {
+  // Name has to be in the following format: material-action-check_circle
+  var splitName = iconName.split('-');
+  var type = splitName[0];
+  if (type == 'material') {
+    var category = splitName[1];
+    var name = splitName[2];
+    return generateMaterialIconPath(category, name);
+  } else {
+    throw 'Currently only Material Icons are supported. They have to be prefixed with "material" e.g. material-action-check_circle';
+  }
+}
+
+function generateMaterialIconPath(category, name) {
+  var materialIconName = 'ic_' + name + '_24px.svg';
+  return path.resolve(path.join('node_modules', 'material-design-icons', category, 'svg', 'production', materialIconName));
+}
+
+function tidySVG(svg, SVGAttributes) {
+  // run the SVG contents through an optimizer to clean it up and normalize it
+  var svgo = new SVGO({plugins: [{removeTitle: true}]});
+  svgo.optimize(svg, function (result) {
+    // It's callback, but this is actually run synchronously
+    svg = result.data;
+  });
+
+  // remove src and icon-name from svg
+  SVGAttributes = SVGAttributes.filter(function (attribute) {
+    return (attribute[0] != 'src') && (attribute[0] != 'name');
+  });
+
+  var svgHead = svg.slice(0, 4);
+  var svgTail = svg.slice(4);
+  var SVGAttributesStringified = '';
+
+  SVGAttributes.forEach(function (attr) {
+    SVGAttributesStringified = SVGAttributesStringified + ' ' + attr[0] + '="' + attr[1] + '" ';
+  });
+
+  return (svgHead + ' role="presentation" focusable="false" ' + SVGAttributesStringified + svgTail);
+}

@@ -26,7 +26,8 @@
     "should": "^9.0.2"
   },
   "dependencies": {
-    "svgo": "^0.6.6"
+    "svgo": "0.7.2",
+    "simple-html-tokenizer": "0.4.0"
   },
   "peerDependencies": {
     "material-design-icons": "3.0.1"
