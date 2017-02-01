@@ -31,7 +31,7 @@ module.exports = function (content) {
       loader.addDependency(filePath);
       return tidySVG(fileContent, SVGAttributes);
     } catch (e) {
-      console.error('SVG Path does not exist.');
+      throw new Error('SVG Path does not exist.');
     }
   });
 };
@@ -63,7 +63,7 @@ function generateLibraryIconPath(iconName) {
     var name = splitName[2];
     return generateMaterialIconPath(category, name);
   } else {
-    throw 'Currently only Material Icons are supported. They have to be prefixed with "material" e.g. material-action-check_circle';
+    throw new Error('Currently only Material Icons are supported. They have to be prefixed with "material" e.g. material-action-check_circle');
   }
 }
 
