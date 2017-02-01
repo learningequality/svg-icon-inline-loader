@@ -82,7 +82,7 @@ function tidySVG(svg, SVGAttributes) {
 
   // remove src and icon-name from svg
   SVGAttributes = SVGAttributes.filter(function (attribute) {
-    return (attribute[0] != 'src') && (attribute[0] != 'name');
+    return (attribute[0] != 'src') && (attribute[0] != 'icon-name');
   });
 
   var svgHead = svg.slice(0, 4);
