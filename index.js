@@ -62,14 +62,26 @@ function generateLibraryIconPath(iconName) {
     var category = splitName[1];
     var name = splitName[2];
     return generateMaterialIconPath(category, name);
-  } else {
-    throw new Error('Currently only Material Icons are supported. They have to be prefixed with "material" e.g. material-action-check_circle');
+  }
+  else if(type == 'ion') {
+    var name = splitName[1];
+    return generateIonIconPath(name);
+  }
+  else {
+    throw new Error('The icon-name must be prefixed with either "material" or "ion".');
   }
 }
 
 function generateMaterialIconPath(category, name) {
   var materialIconName = 'ic_' + name + '_24px.svg';
   return path.resolve(path.join('node_modules', 'material-design-icons', category, 'svg', 'production', materialIconName));
+}
+
+function generateIonIconPath(name) {
+  // replace underscores with dashes
+  var nameWithDashes = name.replace(/[_]/g, '-');
+  var ionIconName = nameWithDashes + '.svg';
+  return path.resolve(path.join('node_modules', 'ionicons', 'src', ionIconName));
 }
 
 function tidySVG(svg, SVGAttributes) {
