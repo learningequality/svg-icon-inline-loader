@@ -1,7 +1,7 @@
 {
-  "name": "material-svg-inline-loader",
+  "name": "icon-svg-inline-loader",
   "version": "3.0.0",
-  "description": "Webpack loader to inline Material Design SVGs or any SVG file.",
+  "description": "Webpack loader to inline Material Design SVGs, Iconicon SVGs, or any SVG file.",
   "main": "index.js",
   "scripts": {
     "test": "mocha ./test/index.spec.js"

@@ -1,10 +1,10 @@
-# Material SVG Inline Loader
+# Icon SVG Inline Loader
 
-A webpack loader that enables inlining Material Design SVGs or any SVG file into HTML.
+A webpack loader that enables inlining Material Design SVGs, Ionicon SVGs, or any SVG file into HTML.
 
 ## Install
 
-`npm install --save-dev material-svg-inline-loader`
+`npm install --save-dev icon-svg-inline-loader`
 
 
 ## Usage
@@ -33,11 +33,32 @@ This loader identifies **self-closing** SVGs with either a `src` or `icon-name` 
 
 #### Reference a Material Design Icon
 
+To reference a Material Design Icon, the `icon-name` attribute must follow a specific format:
+ 
+ `material-[category]-[name]` 
+ 
+ *Multi-word icon names are separated by underscores.*
+
+##### Example
+
 ```html
-<svg icon-name="material-action-home"/>
+<svg icon-name="material-fullscreen_exit"/>
 ```
 
-The `icon-name` attribute must follow a specific format: `<material>-<category>-<icon_name>` e.g. `material-action-hourglass_empty`
+
+#### Reference a Ionicon Icon
+
+To reference a Material Design Icon, the `icon-name` attribute must follow a specific format:
+
+ `ion-[name]` 
+
+*Multi-word icon names are separated by underscores.*
+
+##### Example
+
+```html
+<svg icon-name="ion-arrow_expand"/>
+```
 
 #### Reference an SVG File
 
