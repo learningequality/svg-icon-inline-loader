@@ -81,7 +81,7 @@ function generateIonIconPath(name) {
   // replace underscores with dashes
   var nameWithDashes = name.replace(/[_]/g, '-');
   var ionIconName = nameWithDashes + '.svg';
-  return path.resolve(path.join('node_modules', 'ionicons', 'src', ionIconName));
+  return path.resolve(path.join('node_modules', 'ionicons-npm', 'src', ionIconName));
 }
 
 function tidySVG(svg, SVGAttributes) {
