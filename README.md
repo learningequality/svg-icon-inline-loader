@@ -80,6 +80,6 @@ A11y modifications for SVGs as [recommended](http://haltersweb.github.io/Accessi
 Inlining SVGs enables CSS to be applied to SVGs.
 
 
-#### Notes
+## Notes
 
 Originally forked from [markup-inline-loader](https://github.com/asnowwolf/markup-inline-loader). Thank you!
