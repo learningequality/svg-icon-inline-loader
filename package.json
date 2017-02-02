@@ -1,7 +1,7 @@
 {
-  "name": "svg-inline-loader",
-  "version": "2.0.0",
-  "description": "webpack loader to inline SVGs",
+  "name": "material-svg-inline-loader",
+  "version": "3.0.0",
+  "description": "Webpack loader to inline Material Design SVGs or any SVG file.",
   "main": "index.js",
   "scripts": {
     "test": "mocha ./test/index.spec.js"
@@ -14,7 +14,8 @@
     "webpack",
     "loader",
     "svg",
-    "inline"
+    "inline",
+    "material icons"
   ],
   "author": "Zhicheng Wang, Devon Rueckner",
   "license": "MIT",
@@ -22,14 +23,15 @@
     "url": "https://github.com/learningequality/svg-inline-loader/issues"
   },
   "devDependencies": {
-    "mocha": "^2.5.3",
-    "should": "^9.0.2"
+    "webpack": "^2.2.1",
+    "mocha": "^3.2.0",
+    "should": "^11.2.0"
   },
   "dependencies": {
-    "svgo": "0.7.2",
-    "simple-html-tokenizer": "0.4.0"
+    "svgo": "^0.7.2",
+    "simple-html-tokenizer": "^0.4.0"
   },
   "peerDependencies": {
-    "material-design-icons": "3.0.1"
+    "material-design-icons": "^3.0.1"
   }
 }
