@@ -15,7 +15,9 @@
     "loader",
     "svg",
     "inline",
-    "material icons"
+    "icons",
+    "material",
+    "ionicon"
   ],
   "author": "Zhicheng Wang, Devon Rueckner",
   "license": "MIT",
@@ -28,9 +30,9 @@
     "should": "^11.2.0"
   },
   "dependencies": {
-    "svgo": "^0.7.2",
-    "simple-html-tokenizer": "^0.4.0",
+    "ionicons-npm": "latest",
     "material-design-icons": "latest",
-    "ionicons": "latest"
+    "svgo": "^0.7.2",
+    "simple-html-tokenizer": "^0.4.0"
   }
 }

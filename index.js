@@ -31,7 +31,7 @@ module.exports = function (content) {
       loader.addDependency(filePath);
       return tidySVG(fileContent, SVGAttributes);
     } catch (e) {
-      throw new Error('SVG Path does not exist.');
+      throw new Error('SVG Path ' + filePath + ' does not exist.');
     }
   });
 };
