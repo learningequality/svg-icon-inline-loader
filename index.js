@@ -3,7 +3,7 @@ var path = require('path');
 var SVGO = require('svgo');
 var simpleHtmlTokenizer = require('simple-html-tokenizer');
 
-var SELF_CLOSING_SVG = new RegExp(`<svg[^>]+?\/>`, 'gi');
+var SELF_CLOSING_SVG = new RegExp(`<inline-svg[^>]+?\/>`, 'gi');
 
 module.exports = function (content) {
   var loader = this;
