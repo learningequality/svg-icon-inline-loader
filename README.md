@@ -14,7 +14,7 @@ A webpack loader that enables inlining Material Design SVGs, Ionicon SVGs, or an
 ```js
 {
   test: /\.html$/,
-  loader: 'svg-inline'
+  loader: 'svg-icon-inline'
 },
 ```
 
@@ -23,51 +23,57 @@ Or with [html-loader](https://github.com/webpack-contrib/html-loader):
 ```js
 {
   test: /\.html$/,
-  loader: 'html!svg-inline'
+  loader: 'html!svg-icon-inline'
 },
 ```
 
 ### Within HTML
 
-This loader identifies the types of tags:
-1. `<mat-svg/>` Inline a Material Design Icon SVG
-2. `<ion-svg/>` Inline an Ionicon Icon SVG
-3. `<file-svg/>` Inline a SVG from a file.
+This loader identifies recognizes 3 types of **self-closing** tags:
 
-#### Reference a Material Design Icon
+1. `<mat-svg/>` - Inline a Material Design SVG
+2. `<ion-svg/>` - Inline an Ionicon SVG
+3. `<file-svg/>` - Inline an SVG from a file.
+
+#### Inline a Material Design SVG
  
 ```html
 <mat-svg category="navigation" name="fullscreen_exit"/>
 ```
 
-#### Reference a Ionicon Icon
+* `category`: The category that Material Design specifies for that icon.
+* `name`: The name of the icon. If the name is multi-word, it must be separated using underscores.
 
-To reference a Material Design Icon, the `icon-name` attribute must follow a specific format:
+#### Inline a Ionicon SVG
 
 ```html
-<ion-svg name="ion-arrow_expand"/>
+<ion-svg name="ion-arrow-expand"/>
 ```
 
-#### Reference an SVG File
+* `name`: The name of the icon. If the name is multi-word, it must be separated using hyphens.
+
+#### Inline an SVG File
 
 ```html
 <file-svg src="./icons/home.svg"/>
 ```
 
+* `src`: The path of the svg file.
+
 ### Features
 
 #### Retained Attributes
 
-Any attributes (apart from `src` or `icon-name`) are retained. For example:
+Any attributes apart from `category`, `name` or `src`, are retained. For example:
 
 **Input** 
 ```html
-<svg v-if="displayHomeIcon" class="icon-home" icon-name="material-action-home" />
+<mat-svg v-if="displayHomeIcon" class="icon-home" category="action" name="home"/>
 ```
 
 **Output** 
 ```html
-<svg v-if="displayHomeIcon" class="icon-home" role="presentation" focusable="false" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<svg role="presentation" focusable="false" v-if="displayHomeIcon" class="icon-home" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
   <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
   <path d="M0 0h24v24H0z" fill="none"></path>
 </svg>
