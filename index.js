@@ -102,8 +102,8 @@ function tidySVG(svg, SVGAttributes) {
   var SVGAttributesStringified = '';
 
   SVGAttributes.forEach(function (attr) {
-    SVGAttributesStringified = SVGAttributesStringified + ' ' + attr[0] + '="' + attr[1] + '" ';
+    SVGAttributesStringified = SVGAttributesStringified + ' ' + attr[0] + '="' + attr[1] + '"';
   });
 
-  return (svgHead + ' role="presentation" focusable="false" ' + SVGAttributesStringified + svgTail);
+  return (svgHead + ' role="presentation" focusable="false"' + SVGAttributesStringified + svgTail);
 }
