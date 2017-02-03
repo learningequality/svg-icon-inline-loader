@@ -3,27 +3,42 @@ var path = require('path');
 var SVGO = require('svgo');
 var simpleHtmlTokenizer = require('simple-html-tokenizer');
 
-var SELF_CLOSING_SVG = new RegExp(`<inline-svg[^>]+?\/>`, 'gi');
+var SELF_CLOSING_PREFIXED_SVG = new RegExp(`<(mat|ion|file)-svg[^>]*?\/>`, 'gi');
 
 module.exports = function (content) {
   var loader = this;
   this.cacheable && this.cacheable();
 
-  return content.replace(SELF_CLOSING_SVG, function (matchedSVG) {
+  return content.replace(SELF_CLOSING_PREFIXED_SVG, function (matchedTag, matchType) {
     var filePath = null;
-    var tokenizedSVG = simpleHtmlTokenizer.tokenize(matchedSVG);
+    var tokenizedSVG = simpleHtmlTokenizer.tokenize(matchedTag);
     var SVGAttributes = tokenizedSVG[0].attributes;
 
-    // if does not have src or icon-name attributes, return same svg
-    var srcOrIconName = hasSrcOrIconName(SVGAttributes);
-    if (srcOrIconName[0] === false) {
-      return matchedSVG;
-    } else if (srcOrIconName[1] == 'src') {
-      var src = srcOrIconName[2];
-      filePath = path.join(loader.context, src);
-    } else if (srcOrIconName[1] == 'icon-name') {
-      var iconName = srcOrIconName[2];
-      filePath = generateLibraryIconPath(iconName);
+    switch (matchType) {
+      case 'mat':
+        var category = getAttributeValue(SVGAttributes, 'category');
+        var name = getAttributeValue(SVGAttributes, 'name');
+        if (!(category && name)) {
+          throw new Error('A `mat-svg` tag must contain a `category` and a `name` attribute.');
+        }
+        filePath = generateMaterialIconPath(category, name);
+        break;
+
+      case 'ion':
+        var name = getAttributeValue(SVGAttributes, 'name');
+        if (!name) {
+          throw new Error('A `ion-svg` tag must contain a `name` attribute.');
+        }
+        filePath = generateIonIconPath(name);
+        break;
+
+      case 'file':
+        var src = getAttributeValue(SVGAttributes, 'src');
+        if (!src) {
+          throw new Error('A `file-svg` tag must contain a `src` attribute.');
+        }
+        filePath = path.join(loader.context, src);
+        break;
     }
 
     try {
@@ -31,56 +46,37 @@ module.exports = function (content) {
       loader.addDependency(filePath);
       return tidySVG(fileContent, SVGAttributes);
     } catch (e) {
-      throw new Error('SVG Path ' + filePath + ' does not exist.');
+      throw new Error('SVG path ' + filePath + ' does not exist.');
     }
   });
 };
 
-// Checks if a src or icon-name attribute exists.
-// If no, returns [false, null, null]
-// If src, returns [true, 'src', path]
-// If icon-name, returns [true, icon-name', iconName]
-function hasSrcOrIconName(SVGAttributes) {
-  for (var i = 0; i < SVGAttributes.length; i++) {
-    if (SVGAttributes[i][0] == "src") {
-      var path = SVGAttributes[i][1];
-      return [true, 'src', path];
-    }
-    if (SVGAttributes[i][0] == "icon-name") {
-      var iconName = SVGAttributes[i][1];
-      return [true, 'icon-name', iconName];
+// returns the value of the attribute
+// if not found provides null
+function getAttributeValue(attributesArray, attribute) {
+  for (var i = 0; i < attributesArray.length; i++) {
+    if (attributesArray[i][0] == attribute) {
+      return attributesArray[i][1]
     }
   }
-  return [false, null, null];
-}
-
-function generateLibraryIconPath(iconName) {
-  // Name has to be in the following format: material-action-check_circle
-  var splitName = iconName.split('-');
-  var type = splitName[0];
-  if (type == 'material') {
-    var category = splitName[1];
-    var name = splitName[2];
-    return generateMaterialIconPath(category, name);
-  }
-  else if(type == 'ion') {
-    var name = splitName[1];
-    return generateIonIconPath(name);
-  }
-  else {
-    throw new Error('The icon-name must be prefixed with either "material" or "ion".');
-  }
+  return null;
 }
 
 function generateMaterialIconPath(category, name) {
+  // make sure name does not have dashes
+  if (name.includes('-') || name.includes(' ')) {
+    throw new Error('If the name attribute of a mat-svg is multi-word, it must be separated by underscores.');
+  }
   var materialIconName = 'ic_' + name + '_24px.svg';
   return path.resolve(path.join('node_modules', 'material-design-icons', category, 'svg', 'production', materialIconName));
 }
 
 function generateIonIconPath(name) {
-  // replace underscores with dashes
-  var nameWithDashes = name.replace(/[_]/g, '-');
-  var ionIconName = nameWithDashes + '.svg';
+  // make sure name does not have underscores
+  if (name.includes('_') || name.includes(' ')) {
+    throw new Error('If the name attribute of a mat-svg is multi-word, it must be separated by hyphens.');
+  }
+  var ionIconName = name + '.svg';
   return path.resolve(path.join('node_modules', 'ionicons-npm', 'src', ionIconName));
 }
 
@@ -92,9 +88,9 @@ function tidySVG(svg, SVGAttributes) {
     svg = result.data;
   });
 
-  // remove src and icon-name from svg
+  // remove category, name, or src attributes from svg
   SVGAttributes = SVGAttributes.filter(function (attribute) {
-    return (attribute[0] != 'src') && (attribute[0] != 'icon-name');
+    return (attribute[0] != 'category') && (attribute[0] != 'name') && (attribute[0] != 'src');
   });
 
   var svgHead = svg.slice(0, 4);
@@ -107,3 +103,4 @@ function tidySVG(svg, SVGAttributes) {
 
   return (svgHead + ' role="presentation" focusable="false"' + SVGAttributesStringified + svgTail);
 }
+

@@ -29,41 +29,29 @@ Or with [html-loader](https://github.com/webpack-contrib/html-loader):
 
 ### Within HTML
 
-This loader identifies **self-closing** SVGs with either a `src` or `icon-name` attribute.
+This loader identifies the types of tags:
+1. `<mat-svg/>` Inline a Material Design Icon SVG
+2. `<ion-svg/>` Inline an Ionicon Icon SVG
+3. `<file-svg/>` Inline a SVG from a file.
 
 #### Reference a Material Design Icon
-
-To reference a Material Design Icon, the `icon-name` attribute must follow a specific format:
  
- `material-[category]-[name]` 
- 
- *Multi-word icon names are separated by underscores.*
-
-##### Example
-
 ```html
-<svg icon-name="material-fullscreen_exit"/>
+<mat-svg category="navigation" name="fullscreen_exit"/>
 ```
-
 
 #### Reference a Ionicon Icon
 
 To reference a Material Design Icon, the `icon-name` attribute must follow a specific format:
 
- `ion-[name]` 
-
-*Multi-word icon names are separated by underscores.*
-
-##### Example
-
 ```html
-<svg icon-name="ion-arrow_expand"/>
+<ion-svg name="ion-arrow_expand"/>
 ```
 
 #### Reference an SVG File
 
 ```html
-<svg src="./icons/home.svg"/>
+<file-svg src="./icons/home.svg"/>
 ```
 
 ### Features
