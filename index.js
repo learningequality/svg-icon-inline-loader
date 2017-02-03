@@ -51,8 +51,8 @@ module.exports = function (content) {
   });
 };
 
-// returns the value of the attribute
-// if not found provides null
+// Returns the value of the attribute
+// If the attribute is not found returns null
 function getAttributeValue(attributesArray, attribute) {
   for (var i = 0; i < attributesArray.length; i++) {
     if (attributesArray[i][0] == attribute) {
@@ -63,7 +63,7 @@ function getAttributeValue(attributesArray, attribute) {
 }
 
 function generateMaterialIconPath(category, name) {
-  // make sure name does not have dashes
+  // Check that the name does not contain dashes or spaces
   if (name.includes('-') || name.includes(' ')) {
     throw new Error('If the name attribute of a mat-svg is multi-word, it must be separated by underscores.');
   }
@@ -72,7 +72,7 @@ function generateMaterialIconPath(category, name) {
 }
 
 function generateIonIconPath(name) {
-  // make sure name does not have underscores
+  // Check that the name does not contain underscores or spaces
   if (name.includes('_') || name.includes(' ')) {
     throw new Error('If the name attribute of a mat-svg is multi-word, it must be separated by hyphens.');
   }
@@ -81,14 +81,14 @@ function generateIonIconPath(name) {
 }
 
 function tidySVG(svg, SVGAttributes) {
-  // run the SVG contents through an optimizer to clean it up and normalize it
+  // clean up the svg
   var svgo = new SVGO({plugins: [{removeTitle: true}]});
   svgo.optimize(svg, function (result) {
-    // It's callback, but this is actually run synchronously
+    // Is a callback but is actually run synchronously
     svg = result.data;
   });
 
-  // remove category, name, or src attributes from svg
+  // Remove category, name, or src attributes from svg
   SVGAttributes = SVGAttributes.filter(function (attribute) {
     return (attribute[0] != 'category') && (attribute[0] != 'name') && (attribute[0] != 'src');
   });
