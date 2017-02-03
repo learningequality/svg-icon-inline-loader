@@ -25,14 +25,14 @@
     "url": "https://github.com/learningequality/svg-icon-inline-loader/issues"
   },
   "devDependencies": {
-    "mocha": "3.2.0",
-    "should": "11.2.0",
-    "webpack": "2.2.1"
+    "mocha": "^3.2.0",
+    "should": "^11.2.0",
+    "webpack": "^2.2.1"
   },
   "dependencies": {
-    "ionicons-npm": "2.0.1",
-    "material-design-icons": "3.0.1",
-    "simple-html-tokenizer": "0.4.0",
-    "svgo": "0.7.2"
+    "ionicons-npm": "^2.0.1",
+    "material-design-icons": "^3.0.1",
+    "simple-html-tokenizer": "^0.4.0",
+    "svgo": "^0.7.2"
   }
 }
