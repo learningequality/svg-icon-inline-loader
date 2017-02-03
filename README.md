@@ -1,12 +1,15 @@
-# What's this?
+# Icon SVG Inline Loader
 
-This is a webpack loader. It can inline SVG files into HTML, so that you can apply css to them.
+A webpack loader that enables inlining Material Design SVGs, Ionicon SVGs, or any SVG file into HTML.
 
-It was forked from [https://github.com/asnowwolf/markup-inline-loader] - thank you!
+## Install
 
-## Example 
+`npm install --save-dev icon-svg-inline-loader`
 
-### Configuration
+
+## Usage
+
+### Webpack Configuration
 
 ```js
 {
@@ -15,7 +18,7 @@ It was forked from [https://github.com/asnowwolf/markup-inline-loader] - thank y
 },
 ```
 
-or with html-loader:
+Or with [html-loader](https://github.com/webpack-contrib/html-loader):
 
 ```js
 {
@@ -24,66 +27,68 @@ or with html-loader:
 },
 ```
 
+### Within HTML
 
-### Original HTML
+This loader identifies the types of tags:
+1. `<mat-svg/>` Inline a Material Design Icon SVG
+2. `<ion-svg/>` Inline an Ionicon Icon SVG
+3. `<file-svg/>` Inline a SVG from a file.
 
-Attributes (apart from `src`) are retained in the output.
+#### Reference a Material Design Icon
+ 
+```html
+<mat-svg category="navigation" name="fullscreen_exit"/>
+```
+
+#### Reference a Ionicon Icon
+
+To reference a Material Design Icon, the `icon-name` attribute must follow a specific format:
 
 ```html
-<svg class="icon" src="./icons/camera.svg" />
+<ion-svg name="ion-arrow_expand"/>
 ```
 
-### Translated HTML
+#### Reference an SVG File
 
-A11y modifications - [source](http://haltersweb.github.io/Accessibility/svg.html):
+```html
+<file-svg src="./icons/home.svg"/>
+```
 
-* remove `desc` and `title` using [SVGO](https://github.com/svg/svgo/)
-* add `role="presentation"` and `focusable="false"` attributes
+### Features
 
+#### Retained Attributes
 
-```svg
-<svg role="presentation" focusable="false" class="icon" viewBox="0 0 1024 1404.416" xmlns="http://www.w3.org/2000/svg">
-  <path d="M960 440.384h-256v-128c0-35.312-28.656-64-64-64h-256c-35.344 0-64 28.688-64 64v128h-128v-64h-128v64c-35.344 0-64 28.688-64 64v704c0 35.376 28.656 64 64 64h896c35.344 0 64-28.624 64-64v-704c0-35.312-28.656-64-64-64z m-512-64h128v64h-128v-64z m448 768h-768v-576h768v576z m-384-128c106.032 0 192-85.938 192-192s-85.968-192-192-192-192 85.938-192 192 85.968 192 192 192z m0-256c35.344 0 64 28.624 64 64s-28.656 64-64 64-64-28.624-64-64 28.656-64 64-64z"/>
+Any attributes (apart from `src` or `icon-name`) are retained. For example:
+
+**Input** 
+```html
+<svg v-if="displayHomeIcon" class="icon-home" icon-name="material-action-home" />
+```
+
+**Output** 
+```html
+<svg v-if="displayHomeIcon" class="icon-home" role="presentation" focusable="false" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+  <path d="M0 0h24v24H0z" fill="none"></path>
 </svg>
 ```
 
-So we can apply css styles to `svg > path {}`.
+#### Accessibility Improvements
 
-or
+A11y modifications for SVGs as [recommended](http://haltersweb.github.io/Accessibility/svg.html).
 
-```svg
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-   viewBox="0 0 250 250" style="enable-background:new 0 0 250 250;" xml:space="preserve">
-<style type="text/css">
-  .st0{fill:#DD0031;}
-  .st1{fill:#C3002F;}
-  .text{fill:#FFFFFF;}
-</style>
-<g>
-  <polygon class="st0" points="125,30 125,30 125,30 31.9,63.2 46.1,186.3 125,230 125,230 125,230 203.9,186.3 218.1,63.2 	"/>
-  <polygon class="st1" points="125,30 125,52.2 125,52.1 125,153.4 125,153.4 125,230 125,230 203.9,186.3 218.1,63.2 125,30 	"/>
-  <path class="text" d="M125,52.1L66.8,182.6h0h21.7h0l11.7-29.2h49.4l11.7,29.2h0h21.7h0L125,52.1L125,52.1L125,52.1L125,52.1
-    L125,52.1z M142,135.4H108l17-40.9L142,135.4z"/>
-</g>
-</svg>
-```
+* Add `role="presentation"` and `focusable="false"` attributes.
+* Remove `desc` and `title` attrubutes.
 
-So we can apply css animations to `svg > .text`, for example: 
+#### SVG Clean Up
 
-```css
-@keyframes rotate {
-  from {
-    transform: rotateY(0deg);
-  }
-  to {
-    transform: rotateY(-180deg);
-  }
-}
+[SVGO](https://github.com/svg/svgo) is used to optimize SVGs.
 
-svg > .text {
-  animation: 3s infinite rotate;
-  transform-origin: center;
-}
-```
+#### Applying CSS to SVGs
+
+Inlining SVGs enables CSS to be applied to SVGs.
+
+
+## Notes
+
+Originally forked from [markup-inline-loader](https://github.com/asnowwolf/markup-inline-loader). Thank you!

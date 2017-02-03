@@ -1,7 +1,7 @@
 {
-  "name": "svg-inline-loader",
-  "version": "2.0.0",
-  "description": "webpack loader to inline SVGs",
+  "name": "icon-svg-inline-loader",
+  "version": "3.0.0",
+  "description": "Webpack loader to inline Material Design SVGs, Iconicon SVGs, or any SVG file.",
   "main": "index.js",
   "scripts": {
     "test": "mocha ./test/index.spec.js"
@@ -14,18 +14,25 @@
     "webpack",
     "loader",
     "svg",
-    "inline"
+    "inline",
+    "icons",
+    "material",
+    "ionicon"
   ],
-  "author": "Zhicheng Wang, Devon Rueckner",
+  "author": "Learning Equality",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/learningequality/svg-inline-loader/issues"
   },
   "devDependencies": {
-    "mocha": "^2.5.3",
-    "should": "^9.0.2"
+    "mocha": "3.2.0",
+    "should": "11.2.0",
+    "webpack": "2.2.1"
   },
   "dependencies": {
-    "svgo": "^0.6.6"
+    "ionicons-npm": "2.0.1",
+    "material-design-icons": "3.0.1",
+    "simple-html-tokenizer": "0.4.0",
+    "svgo": "0.7.2"
   }
 }
