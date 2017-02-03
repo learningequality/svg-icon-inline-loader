@@ -4,7 +4,7 @@ A webpack loader that enables inlining Material Design SVGs, Ionicon SVGs, or an
 
 ## Install
 
-`npm install --save-dev icon-svg-inline-loader`
+`npm install --save-dev svg-icon-inline-loader`
 
 
 ## Usage
