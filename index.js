@@ -43,11 +43,11 @@ module.exports = function (content) {
 
     try {
       var fileContent = fs.readFileSync(filePath, {encoding: 'utf-8'});
-      loader.addDependency(filePath);
-      return tidySVG(fileContent, SVGAttributes);
     } catch (e) {
       throw new Error('SVG path ' + filePath + ' does not exist.');
     }
+    loader.addDependency(filePath);
+    return tidySVG(fileContent, SVGAttributes);
   });
 };
 
