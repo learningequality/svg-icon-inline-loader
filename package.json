@@ -1,14 +1,14 @@
 {
-  "name": "icon-svg-inline-loader",
+  "name": "svg-icon-inline-loader",
   "version": "3.0.0",
-  "description": "Webpack loader to inline Material Design SVGs, Iconicon SVGs, or any SVG file.",
+  "description": "Webpack loader to inline Material Design SVGs, Ionicon SVGs, or any SVG file.",
   "main": "index.js",
   "scripts": {
     "test": "mocha ./test/index.spec.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/learningequality/svg-inline-loader.git"
+    "url": "git+https://github.com/learningequality/svg-icon-inline-loader.git"
   },
   "keywords": [
     "webpack",
@@ -22,7 +22,7 @@
   "author": "Learning Equality",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/learningequality/svg-inline-loader/issues"
+    "url": "https://github.com/learningequality/svg-icon-inline-loader/issues"
   },
   "devDependencies": {
     "mocha": "3.2.0",
