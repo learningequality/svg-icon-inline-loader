@@ -3,7 +3,7 @@ var path = require('path');
 var SVGO = require('svgo');
 var simpleHtmlTokenizer = require('simple-html-tokenizer');
 
-var SELF_CLOSING_PREFIXED_SVG = new RegExp(`<(mat|ion|file)-svg[^>]*?\/>`, 'gi');
+var SELF_CLOSING_PREFIXED_SVG = new RegExp(`<(mat|ion|iconic|file)-svg[^>]*?\/>`, 'gi');
 
 module.exports = function (content) {
   var loader = this;
@@ -30,6 +30,14 @@ module.exports = function (content) {
           throw new Error('A `ion-svg` tag must contain a `name` attribute.');
         }
         filePath = generateIonIconPath(name);
+        break;
+
+      case 'iconic':
+        var name = getAttributeValue(SVGAttributes, 'name');
+        if (!name) {
+          throw new Error('A `iconic-svg` tag must contain a `name` attribute.');
+        }
+        filePath = generateIconicIconPath(name);
         break;
 
       case 'file':
@@ -74,10 +82,19 @@ function generateMaterialIconPath(category, name) {
 function generateIonIconPath(name) {
   // Check that the name does not contain underscores or spaces
   if (name.includes('_') || name.includes(' ')) {
-    throw new Error('If the name attribute of a mat-svg is multi-word, it must be separated by hyphens.');
+    throw new Error('If the name attribute of a icon-svg is multi-word, it must be separated by hyphens.');
   }
   var ionIconName = name + '.svg';
   return path.resolve(path.join('node_modules', 'ionicons-npm', 'src', ionIconName));
+}
+
+function generateIconicIconPath(name) {
+  // Check that the name does not contain underscores or spaces
+  if (name.includes('_') || name.includes(' ')) {
+    throw new Error('If the name attribute of a iconic-svg is multi-word, it must be separated by hyphens.');
+  }
+  var iconicIconName = name + '.svg';
+  return path.resolve(path.join('node_modules', 'open-iconic', 'svg', iconicIconName));
 }
 
 function tidySVG(svg, SVGAttributes) {
