@@ -1,7 +1,7 @@
 {
   "name": "svg-icon-inline-loader",
-  "version": "3.0.0",
-  "description": "Webpack loader to inline Material Design SVGs, Ionicon SVGs, or any SVG file.",
+  "version": "3.1.0",
+  "description": "Webpack loader to inline Material Design SVGs, Ionicon SVGs, Iconic SVGs, or any SVG file.",
   "main": "index.js",
   "scripts": {
     "test": "mocha ./test/index.spec.js"
@@ -17,7 +17,8 @@
     "inline",
     "icons",
     "material",
-    "ionicon"
+    "ionicon",
+    "iconic"
   ],
   "author": "Learning Equality",
   "license": "MIT",
@@ -32,6 +33,7 @@
   "dependencies": {
     "ionicons-npm": "^2.0.1",
     "material-design-icons": "^3.0.1",
+    "open-iconic": "^1.1.1",
     "simple-html-tokenizer": "^0.4.0",
     "svgo": "^0.7.2"
   }

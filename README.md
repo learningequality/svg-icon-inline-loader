@@ -1,6 +1,6 @@
 # Icon SVG Inline Loader
 
-A webpack loader that enables inlining [Material Design](https://material.io/icons/) SVGs, [Ionicon](http://ionicons.com/) SVGs, or any SVG file into HTML.
+A webpack loader that enables inlining [Material Design](https://material.io/icons/) SVGs, [Ionicon](http://ionicons.com/) SVGs, [Iconic SVGs](https://useiconic.com/), or any SVG file into HTML.
 
 ## Install
 
@@ -33,7 +33,8 @@ This loader recognizes 3 types of **self-closing** tags:
 
 1. `<mat-svg/>` - Inline a Material Design SVG
 2. `<ion-svg/>` - Inline an Ionicon SVG
-3. `<file-svg/>` - Inline an SVG file.
+3. `<iconic-svg/>` - Inline an Iconic SVG
+4. `<file-svg/>` - Inline an SVG file.
 
 #### Inline a Material Design SVG
  
@@ -48,6 +49,14 @@ This loader recognizes 3 types of **self-closing** tags:
 
 ```html
 <ion-svg name="ion-arrow-expand"/>
+```
+
+* `name`: The name of the icon. If the name is multi-word, it must be separated using **hyphens**.
+
+#### Inline an Iconic SVG
+
+```html
+<iconic-svg name="account-login"/>
 ```
 
 * `name`: The name of the icon. If the name is multi-word, it must be separated using **hyphens**.
